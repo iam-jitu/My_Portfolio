@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jitendra Namdev - Aspiring DevOps Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Dark Professional (Deep Grey, Vibrant Blue, Light Text) -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling layout with a sticky top navigation for quick access to key sections. The flow is designed for recruiters: Hero (intro) -> Skills (capabilities, with a chart for quick visual assessment) -> Projects (proof of skills, with interactive modals for details) -> Experience (chronological context) -> Education & Certs. This structure prioritizes scannability and allows users to dive into details on demand, making it more efficient than a static document. -->
+    <!-- Visualization & Content Choices: 
+        - Hero: Inform -> Static Text & Image -> Justification: Clear, immediate introduction with a personal touch.
+        - Skills: Compare/Inform -> Bar Chart (Chart.js) & Styled Lists (HTML/CSS) -> Interaction: Chart tooltips on hover -> Justification: The chart provides a high-level, visually digestible summary of core competencies, while lists offer detailed technologies. This combination caters to both quick scans and detailed reviews.
+        - Projects: Organize/Inform -> Card Grid (HTML/CSS) with Modals -> Interaction: Click button to open modal with details -> Justification: Keeps the main interface clean while providing deep-dive information on demand. This prevents overwhelming the user.
+        - Experience: Change/Inform -> Vertical Timeline (HTML/CSS) -> Interaction: Subtle hover effects -> Justification: A timeline is an intuitive and visually engaging way to present chronological work history.
+        - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #1A1A1A; /* Dark background */
+            color: #E0E0E0; /* Light text */
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #3498DB; /* Vibrant blue accent */
+            transition: width 0.3s ease;
+        }
+        .nav-link.active:after, .nav-link:hover:after {
+            width: 100%;
+        }
+        .timeline-item {
+            position: relative;
+            padding-bottom: 2rem;
+            padding-left: 2.5rem;
+        }
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 0;
+            top: 0.25rem;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            background-color: #3498DB; /* Vibrant blue accent */
+            border: 2px solid #1A1A1A; /* Matches body background */
+        }
+        .timeline-line {
+            position: absolute;
+            left: 0.45rem;
+            top: 0.25rem;
+            width: 2px;
+            height: 100%;
+            background-color: #444444; /* Darker line */
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7); /* Darker overlay */
+            z-index: 40;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.95);
+            z-index: 50;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+        .modal-content.active {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
+        }
+        .chart-container {
+            position: relative;
+            height: 40vh;
+            max-height: 400px;
+            width: 100%;
+            max-width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-gray-900/80 backdrop-blur-lg sticky top-0 z-30 shadow-sm">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="text-xl font-bold text-gray-100">Jitendra Namdev</div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#skills" class="nav-link text-gray-300 hover:text-blue-400">Skills</a>
+                    <a href="#projects" class="nav-link text-gray-300 hover:text-blue-400">Projects</a>
+                    <a href="#experience" class="nav-link text-gray-300 hover:text-blue-400">Experience</a>
+                    <a href="#education" class="nav-link text-gray-300 hover:text-blue-400">Education</a>
+                </div>
+                <a href="mailto:jitendranamdev1930@gmail.com" class="hidden md:block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">Contact Me</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <section id="hero" class="text-center py-16 flex flex-col items-center justify-center">
+            <img src="new.jpg" alt="Jitendra Namdev" class="w-36 h-36 rounded-full object-cover shadow-lg mb-8 border-4 border-blue-600">
+            <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-gray-50">DevOps Engineer</h1>
+            <p class="mt-6 text-lg leading-8 text-gray-300 max-w-3xl mx-auto">
+                Highly motivated engineer with hands-on experience in automation, cloud technologies (AWS), and CI/CD pipelines. Proficient in Linux, scripting, and building scalable, secure infrastructure to solve complex challenges in modern cloud environments.
+            </p>
+            <div class="mt-10 flex items-center justify-center gap-x-6">
+                <a href="#projects" class="rounded-md bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-all">View My Work</a>
+                <a href="https://www.linkedin.com/in/jitendranamdev" target="_blank" class="text-sm font-semibold leading-6 text-blue-400 group">LinkedIn <span class="group-hover:translate-x-1 transition-transform inline-block" aria-hidden="true">→</span></a>
+            </div>
+        </section>
+
+        <section id="skills" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">Technical Proficiency</h2>
+                <p class="mt-4 text-lg text-gray-300">A visual overview of my core competencies and the technologies I work with.</p>
+            </div>
+            <div class="bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg mb-12">
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">Cloud & IaC</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>AWS:</strong> EC2, RDS, S3, VPC, IAM, ECS, ECR</li>
+                        <li><strong>Infrastructure as Code:</strong> Terraform, Ansible</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">Containers & CI/CD</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>Containerization:</strong> Docker, Kubernetes</li>
+                        <li><strong>CI/CD Tools:</strong> Jenkins, GitHub Actions, Azure CI/CD</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">OS & Scripting</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>Operating Systems:</strong> Linux (Ubuntu, RedHat, CentOS)</li>
+                        <li><strong>Scripting:</strong> Bash, Python</li>
+                    </ul>
+                </div>
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">Networking</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>Concepts:</strong> TCP/IP, DNS, OSI Model, NAT</li>
+                        <li><strong>Load Balancers:</strong> Nginx, HAProxy</li>
+                    </ul>
+                </div>
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">Databases</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>SQL:</strong> MySQL, PostgreSQL, AWS RDS</li>
+                        <li><strong>NoSQL:</strong> MongoDB</li>
+                    </ul>
+                </div>
+                 <div class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-3 text-gray-50">Version Control</h3>
+                    <ul class="space-y-2 text-gray-300">
+                        <li><strong>Tools:</strong> Git, GitHub</li>
+                        <li><strong>Workflows:</strong> GitFlow, Feature Branching</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">Featured Projects</h2>
+                <p class="mt-4 text-lg text-gray-300">Hands-on experience applying DevOps principles to real-world applications.</p>
+            </div>
+            <div id="project-cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            </div>
+        </section>
+
+        <section id="experience" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">Professional Experience</h2>
+                <p class="mt-4 text-lg text-gray-300">My journey and growth through practical internships.</p>
+            </div>
+            <div class="max-w-3xl mx-auto">
+                <div class="relative">
+                    <div class="timeline-line"></div>
+                    <div id="experience-timeline"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-16">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold tracking-tight text-gray-50 sm:text-4xl">Education & Certifications</h2>
+                <p class="mt-4 text-lg text-gray-300">My academic foundation and commitment to continuous learning.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-50">Education</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <p class="font-semibold">Masters in Computer Application</p>
+                            <p class="text-sm text-gray-300">ITM University, Gwalior (2023-2025)</p>
+                        </div>
+                        <div>
+                            <p class="font-semibold">Bachelor of Science (Computer Science)</p>
+                            <p class="text-sm text-gray-300">Jiwaji University, Gwalior (2020-2023)</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800 p-8 rounded-2xl shadow-lg">
+                    <h3 class="text-xl font-semibold mb-2 text-gray-50">Certifications</h3>
+                    <ul id="certifications-list" class="space-y-2 text-gray-300 list-inside">
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="modal-backdrop" class="modal-backdrop"></div>
+    <div id="modal-content" class="modal-content bg-gray-800 w-11/12 max-w-2xl rounded-2xl shadow-2xl p-8">
+        <h3 id="modal-title" class="text-2xl font-bold mb-4 text-gray-50"></h3>
+        <div id="modal-body" class="text-gray-300 space-y-4"></div>
+        <div class="mt-6 text-right">
+            <button id="modal-close" class="bg-gray-700 text-gray-100 px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors">Close</button>
+        </div>
+    </div>
+
+    <footer class="bg-gray-900 border-t border-gray-700">
+        <div class="container mx-auto px-6 py-8 text-center text-gray-300">
+            <p class="font-semibold text-lg">Jitendra Namdev</p>
+            <p class="mt-2">Available for new opportunities.</p>
+            <p class="mt-1">jitendranamdev1930@gmail.com</p>
+            <div class="flex justify-center mt-4 space-x-6">
+                 <a href="https://www.linkedin.com/in/jitendranamdev" target="_blank" class="hover:text-blue-400">LinkedIn</a>
+                 <a href="https://github.com/iam-jitu" target="_blank" class="hover:text-blue-400">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectsData = [
+                {
+                    title: 'Django App Deployment on AWS ECS',
+                    description: 'Orchestrated the deployment of a Django application on AWS using ECS and ECR, demonstrating proficiency in containerization and cloud-native deployment strategies. Successfully created Docker images, pushed to ECR, and managed application deployment and scaling on ECS, ensuring operational efficiency.',
+                    tags: ['AWS ECS', 'Docker', 'CI/CD', 'Python']
+                },
+                {
+                    title: 'Java App on AWS 3-Tier Architecture',
+                    description: 'Engineered and deployed a scalable, highly available, and secure Java application on AWS, implementing a robust 3-tier architecture. Utilized core AWS services including VPC, EC2, and RDS to establish a resilient and modular infrastructure, ensuring effective application hosting and management.',
+                    tags: ['AWS VPC', 'EC2', 'RDS', 'Java', 'Security']
+                },
+                {
+                    title: 'Multi-Region AWS VPC Peering',
+                    description: 'Designed and implemented complex AWS VPC infrastructure with multi-region peering connections, focusing on secure and controlled inter-VPC communication. Configured security groups and route tables to enhance network isolation and security compliance, resulting in significant cost reduction and improved latency.',
+                    tags: ['AWS VPC', 'Networking', 'Security', 'Cost Optimization']
+                }
+            ];
+
+            const experienceData = [
+                {
+                    role: 'Linux System Engineer Intern (Virtual)',
+                    company: 'Babli IT Consulting - Remote',
+                    date: 'Apr 2025 - May 2025',
+                    tasks: [
+                        'Proficiently managed Linux systems, including command-line operations, file system administration, and user/permission management.',
+                        'Executed critical system administration tasks such as service management, package installations, and comprehensive log monitoring.'
+                    ]
+                },
+                {
+                    role: 'Web Developer Intern',
+                    company: 'AdRyter Advertising, Gwalior',
+                    date: 'Apr 2024 - Nov 2024',
+                    tasks: [
+                        'Developed and deployed a personalized portfolio website showcasing skills and projects using HTML, CSS, and JavaScript.',
+                        'Maintained websites using modern web technologies and integrated web applications with backend services and databases.'
+                    ]
+                },
+                {
+                    role: 'Data Analytics & Smart Computing Intern',
+                    company: 'ITM University, Gwalior',
+                    date: 'Mar 2025 - Apr 2025',
+                    tasks: [
+                        'Worked on data analysis, trend detection, and predictive modeling using Python and Scikit-learn.',
+                        'Contributed to research focused on academic performance analytics.'
+                    ]
+                }
+            ];
+            
+            const certificationsData = [
+                { name: 'AWS Summit India - Virtual', link: '#' },
+                { name: 'DevOps Boot Camp By TWS', link: '#' },
+                { name: 'Computer Networking', link: '#' },
+                { name: 'GitHub for DevOps Workshop', link: '#' }
+            ];
+
+            const projectCardsContainer = document.getElementById('project-cards');
+            projectsData.forEach((project, index) => {
+                const card = document.createElement('div');
+                card.className = 'bg-gray-800 p-6 rounded-2xl shadow-lg flex flex-col';
+                card.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-2 text-gray-50">${project.title}</h3>
+                    <div class="flex-grow mb-4">
+                        <p class="text-gray-300 text-sm mb-4">${project.description.substring(0, 100)}...</p>
+                        <div class="flex flex-wrap gap-2">
+                            ${project.tags.map(tag => `<span class="bg-blue-800 text-blue-200 text-xs font-medium px-2.5 py-0.5 rounded-full">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                    <button data-index="${index}" class="mt-auto w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors project-button">Learn More</button>
+                `;
+                projectCardsContainer.appendChild(card);
+            });
+
+            const experienceTimelineContainer = document.getElementById('experience-timeline');
+            experienceData.forEach(exp => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <div class="timeline-dot"></div>
+                    <p class="text-sm text-gray-400 mb-1">${exp.date}</p>
+                    <h3 class="text-lg font-semibold text-gray-50">${exp.role}</h3>
+                    <p class="text-md text-gray-300 mb-2">${exp.company}</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        ${exp.tasks.map(task => `<li>${task}</li>`).join('')}
+                    </ul>
+                `;
+                experienceTimelineContainer.appendChild(item);
+            });
+            
+            const certificationsListContainer = document.getElementById('certifications-list');
+            certificationsData.forEach(cert => {
+                const item = document.createElement('li');
+                item.innerHTML = `<a href="${cert.link}" class="hover:text-blue-400 transition-colors">${cert.name}</a>`;
+                certificationsListContainer.appendChild(item);
+            });
+
+            const modalBackdrop = document.getElementById('modal-backdrop');
+            const modalContent = document.getElementById('modal-content');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            const modalCloseBtn = document.getElementById('modal-close');
+
+            document.querySelectorAll('.project-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const project = projectsData[button.dataset.index];
+                    modalTitle.textContent = project.title;
+                    modalBody.innerHTML = `<p>${project.description}</p>`;
+                    modalBackdrop.classList.add('active');
+                    modalContent.classList.add('active');
+                });
+            });
+
+            function closeModal() {
+                modalBackdrop.classList.remove('active');
+                modalContent.classList.remove('active');
+            }
+            modalBackdrop.addEventListener('click', closeModal);
+            modalCloseBtn.addEventListener('click', closeModal);
+
+            const ctx = document.getElementById('skillsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cloud Infrastructure (AWS)', 'Automation & CI/CD', 'Containerization', 'Scripting & OS', 'Networking'],
+                    datasets: [{
+                        label: 'Proficiency Level',
+                        data: [90, 85, 88, 92, 80],
+                        backgroundColor: 'rgba(52, 152, 219, 0.6)', /* Vibrant blue */
+                        borderColor: 'rgba(52, 152, 219, 1)', /* Vibrant blue */
+                        borderWidth: 1,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: '#444444' /* Darker grid lines */
+                            },
+                            ticks: {
+                                color: '#E0E0E0' /* Light tick labels */
+                            }
+                        },
+                        y: {
+                           grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#E0E0E0' /* Light tick labels */
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Self-assessed proficiency: ${context.raw}%`;
+                                }
+                            },
+                            titleColor: '#1A1A1A', /* Dark tooltip title */
+                            bodyColor: '#1A1A1A', /* Dark tooltip body */
+                            backgroundColor: '#E0E0E0' /* Light tooltip background */
+                        }
+                    }
+                }
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 60) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
